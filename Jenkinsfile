@@ -1,18 +1,14 @@
 pipeline {
     agent any
-    parameters {
-        choice(name: 'ENVIRONMENT', choices: ['dev', 'staging', 'prod'], description: 'Select the Exam System deployment environment')
-    }
     stages {
-        // We removed the manual checkout stage because Jenkins SCM does it automatically!
-        stage('Show Parameter') {
+        stage('Generate Exam Report') {
             steps {
-                echo "Selected Examination Environment: ${params.ENVIRONMENT}"
+                bat 'python app.py'
             }
         }
-        stage('Build for Environment') {
+        stage('Archive Report') {
             steps {
-                echo "Building the Online Examination System for the ${params.ENVIRONMENT} environment..."
+                archiveArtifacts artifacts: 'exam_report.txt', fingerprint: true
             }
         }
     }
